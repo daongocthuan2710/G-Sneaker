@@ -1,8 +1,5 @@
 import React from "react";
-import {Card, NavLink } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import Skeleton from '@mui/material/Skeleton';
+import {Card} from "react-bootstrap";
 import "./index.scss";
 
 function CardItem() {

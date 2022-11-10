@@ -6,7 +6,7 @@
         <title>G-Sneaker</title>
 
         @viteReactRefresh
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.jsx'])
     </head>
     <body class="antialiased">
         <div id="root"></div> 

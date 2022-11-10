@@ -1,20 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-
-function Example() {
+import NotFoundImg from "../../../assets/images/404.jpg";
+export default function NotFound() {
     return (
         <div className="container">
             <div className="row justify-content-center">
                 <div className="col-md-8">
                     <div className="card">
-                        <div className="card-header">Example Component</div>
-
-                        <div className="card-body">I'm an example component!</div>
+                        <img 
+                            src={NotFoundImg}
+                        />
                     </div>
                 </div>
             </div>
         </div>
     );
 }
-
-export default Example;

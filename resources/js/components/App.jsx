@@ -1,11 +1,26 @@
-import React from "react";
+import React, { Suspense } from "react";
+import { BrowserRouter, Route, Routes} from 'react-router-dom';
+import Home from "./Home";
+import { Loading } from "notiflix/build/notiflix-loading-aio";
+import NotFound from "./NotFound";
 
-const App = () => {
+export default function App() {
     return (
-        <div>
-            <h1>G-Sneaker</h1>
-        </div>
+        <Suspense fallback={
+            Loading.hourglass({
+            clickToClose: true,
+            svgSize: "50px",
+            svgColor: "rgb(223, 139, 42)",
+            backgroundColor: "rgb(255, 255, 255)"
+        })}> 
+        {Loading.remove()}   
+            <BrowserRouter>
+                <Routes>  
+                    <Route path="/" element={<Home/>}></Route>
+                    <Route path="home" component={<Home/>}></Route>
+                    <Route path="*" element={<NotFound/>}/>
+                </Routes> 
+            </BrowserRouter>
+        </Suspense>
     )
 }
-
-export default App;

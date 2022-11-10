@@ -14,13 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('shoe', function (Blueprint $table) {
-            $table->id();
-            $table->string('image');
-            $table->string('name');
-            $table->string('description');
+            // $table->integer('id', true, true);
+            $table->bigIncrements('id');
+            $table->string('image')->nullable();
+            $table->longText('name');
+            $table->longText('description')->nullable();
             $table->decimal('price', 5, 2, true);
-            $table->string('color');
-            $table->timestamps();
+            $table->string('color')->nullable();
+            // $table->timestamps();
         });
     }
 

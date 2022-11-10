@@ -10,6 +10,7 @@ export default function Home() {
     const [shoes, setShoes] = useState([]);
     const [cartList, setCartList] = useState([...JSON.parse(localStorage.getItem('cart')) || []]);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [animationDelete, setAnimationDelete] = useState(0);
 
     const fetchShoe =  async () => {
         try{
@@ -64,6 +65,7 @@ export default function Home() {
         tmp.splice( getId, 1);
         localStorage.setItem('cart', JSON.stringify(tmp));
         setCartList(tmp);
+        setAnimationDelete(item.id);
         setTotalPrice(totalPrice - Number(item.price))
     }
 
@@ -177,7 +179,10 @@ export default function Home() {
                         {cartList.length > 0
                         ?
                         cartList.map((item) => (
-                            <div className="cart-item" key={item.id}>
+                            <div 
+                            className={`cart-item ${animationDelete == item.id ? 'fall' : ''}`} 
+                            key={item.id}
+                            >
                                 <div className="cart-item__left">
                                     <div className="cart-item-image" style={{backgroundColor: item.color}}>
                                         <div className="cart-item-image__block">
@@ -214,7 +219,7 @@ export default function Home() {
                                 </div>
                             </div> 
                         ))
-                    :''}
+                    :<div>Your cart is empty.</div>}
 
                     </div>
                 </Card.Body>

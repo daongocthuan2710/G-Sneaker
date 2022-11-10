@@ -233,6 +233,26 @@
                 .cart-item{
                     display: flex;
                     padding: 20px 0;
+                    
+                    .fall {
+                        animation: fallAway forwards 1s ease-out 1 !important;
+                    }
+                    
+                    @keyframes fallAway {
+                        0% {
+                          transform: rotateZ(0deg);
+                          top: 0;
+                          opacity: 1;
+                        }
+                        25% {
+                          transform: rotateZ(-15deg);
+                        }
+                        100% {
+                          top: 300px;
+                          transform: rotateZ(-5deg);
+                          opacity: 0;
+                        }
+                      }
 
                     &__left{
                         flex: 0;
@@ -243,6 +263,19 @@
                             border-radius: 100%;
                             background-color: #eee;
                             margin-right: 34px;
+                            animation-name: showCartItem;
+                            animation-duration: 1s;
+
+                            @keyframes showCartItem {
+                                0% {
+                                    width: 0;
+                                    height: 0;
+                                }
+                                100% {
+                                    width: 90px;
+                                    height: 90px;
+                                }
+                              }
 
                             &__block{
 
@@ -258,7 +291,7 @@
 
                     &__right{
                         width: 100%;
-                        
+
                         .cart-item-name{
                             font-size: 14px;
                             font-weight: 700;

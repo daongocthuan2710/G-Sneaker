@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react';
 import {Card} from "react-bootstrap";
 import NikeIcon from "../../../assets/nike.png";
 import Skeleton from '@mui/material/Skeleton';
+import InputSpinner from "react-bootstrap-input-spinner";
 import "./index.scss";
 
 export default function Home() {
     const [shoes, setShoes] = useState([]);
+    const [cartList, setCartList] = useState([...JSON.parse(localStorage.getItem('cart')) || []]);
+    const [totalPrice, setTotalPrice] = useState(0);
 
     const fetchShoe =  async () => {
         try{
             await axios
             .get(`./api/shoes`)
             .then((response) => {
-                console.log(response.data);
                 setShoes(response.data);
             })
         } catch(error) {
@@ -23,6 +25,32 @@ export default function Home() {
     useEffect(() =>{
         fetchShoe();
       }, []);
+
+    const handleAddToCart = (item) => {
+        setTotalPrice(totalPrice + Number(item.price))
+        let tmp = JSON.parse(localStorage.getItem('cart')) || [];
+        tmp.push(item);
+        localStorage.setItem('cart', JSON.stringify(tmp));
+        setCartList(tmp);
+    }
+
+    const handleCheckQuatity = (quantity,item) => {
+
+        if(quantity == 0){
+            handleRemove(item);
+        }
+    }
+
+    const handleRemove = (item) => {
+        let tmp = JSON.parse(localStorage.getItem('cart')) || [];
+        const isRemoved = (element) => element.id == item.id;
+        const getId = tmp.findIndex(isRemoved);
+        tmp.splice( getId, 1);
+        localStorage.setItem('cart', JSON.stringify(tmp));
+        setCartList(tmp);
+    }
+
+
 
     return (
         <div className="main-content">
@@ -54,7 +82,7 @@ export default function Home() {
                                 <div className="shop-item__bottom__price">
                                     ${item.price}
                                 </div>
-                                <div className="shop-item__bottom__button">
+                                <div className="shop-item__bottom__button" onClick={() => handleAddToCart(item)}>
                                     <p>ADD TO CART</p>
                                 </div>
                             </div>
@@ -79,6 +107,7 @@ export default function Home() {
                                 animation={'pulse'}
                             />
                         </div>
+
                         <div className="shop-item__description">
                         <Skeleton 
                                 variant="text" 
@@ -97,6 +126,64 @@ export default function Home() {
                         </div>
                     </div> 
                     }
+                    </div>
+                </Card.Body>
+            </Card>
+
+            <Card className="text-center">
+                <Card.Header>
+                    <img src={NikeIcon} alt="Nike" className="card-header__logo"/>
+                </Card.Header>
+
+                <Card.Title className="text-center">
+                    Your cart
+                    <span className="card-title__amount">{totalPrice}</span>
+                </Card.Title>
+
+                <Card.Body>
+                    <div className="cart-items">
+                        {cartList.length > 0
+                        ?
+                        cartList.map((item) => (
+                            <div className="cart-item" key={item.id}>
+                                <div className="cart-item__left">
+                                    <div className="cart-item-image" style={{backgroundColor: item.color}}>
+                                        <div className="cart-item-image__block">
+                                        <img src={item.image}/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="cart-item__right">
+                                    <div className="cart-item-name">
+                                        {item.name}
+                                    </div>
+                                    <div className="cart-item-price">
+                                        ${item.price}
+                                    </div>
+                                    <div className="cart-item-actions">
+                                        <div className="cart-item-count">
+                                            <InputSpinner
+                                                editable={true}
+                                                type={"real"}
+                                                precision={2}
+                                                max={10}
+                                                min={0}
+                                                step={1}
+                                                value={1}
+                                                onChange={(quantity) => handleCheckQuatity(quantity,item)}
+                                                variant={"secondary"}
+                                                size=""
+                                            />
+                                        </div>
+                                        <div className="cart-item-remove">
+                                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAB2AAAAdgB+lymcgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAALISURBVHic7Zs9bxNBEIYfgyUKAhhQUhDRICEBCh0fgkhBNIT8gPwZ6Gig5y8QCUhH5AqE3EZJgQRKEDSpKEAQkTMdcijGRvi8Z+/e3eze4X2kKe40t/Pu+LRfN4bIdNNQbLsJ3ATOFWznC7AJ/C6syCMngC3gsCTb7LdZGx5SXucH9kBD6BGNRoGrNWlTLQEa7R5VaFMtAbXBZwLWkVnHxtZ9iZr6N6Bp6TcHXAOOW/qfz7i36un5X8A28NXSfywrQJfypzVtS4D7ZSRgpwKdyWsfJnXOZincxf7VrxoJcHKcg80g2ClFShg6ZTQyD2xQr3GgC7yi+EYs8t+TZ329gKwJfiLzbRU4Cywh/fmuGegpw/PssmYwS5aAfURTD3ikFegKo4PNe61gDrxjWFMPuGj7sMte4JLh3mWH57VYSF03cDg7cEmAabxQ2aM7UkjX1O8GfSRgHmgjM8YO4wfOFWC379umYguZVcyrrkm0U/4JMGvwm2N0tblh0b5Jk+222csbcCd1PYOsI9KYzhvuqij6Bx8JMO0kZyz91HehcRAMLSA0MQGhBYQmJiC0gNDEBIQWEJqYgNACQhMTEFpAaGICQgsITUxAaAGhiQnwEMP0+axr6af+6c1HAjqp6wQpo02zxWhi3moIykveU+FBfUGCfEq7N8Z3GSlrSbD/vl/oVNiFvAnQpvLH4pUmJsDBN2tEDlnHn1UBZppljLgkYC/j/i2HNspmMeP+nkawY8ABowPOa41gFjSQaTKt5wDRqsKaIeAh8Bjd/x+laQBPMrQ80wy8iJSgmAK/QWpzW4rxW8gndNMvPyiPua0YH4DnGcGrYGuK/f7LGeBjgM5Nsl3gtGK/h7gAfFbukIt96mvySgt4WVB4UesBL4BTyn0dy42+iEGxog/bR8ai60XFlzl1NZFiyllknNDgB/ANKbaq1V9pI1XlD82w8ru3YIVHAAAAAElFTkSuQmCC" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        ))
+                    :''}
+
                     </div>
                 </Card.Body>
             </Card>

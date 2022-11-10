@@ -57,6 +57,31 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
+                        {shoes.length > 0 
+                    ? shoes.map((item) => (
+                        <div className="shop-item" key={item.id}>
+                            <div className="shop-item__image" style={{backgroundColor: item.color}}>
+                                <img src={item.image} />
+                            </div>
+
+                            <div className="shop-item__name">
+                                {item.name}
+                            </div>
+                            <div className="shop-item__description">
+                                {item.description}
+                            </div>
+                            <div className="shop-item__bottom">
+                                <div className="shop-item__bottom__price">
+                                    ${item.price}
+                                </div>
+                                <div className="shop-item__bottom__button">
+                                    <p>ADD TO CART</p>
+                                </div>
+                            </div>
+                        </div> 
+                    ))
+                    : ''
+                    }
                     </div>
                 </Card.Body>
             </Card>
